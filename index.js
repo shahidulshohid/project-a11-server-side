@@ -82,6 +82,14 @@ async function run() {
         res.send(result)
       })
 
+      // get data for manage my profile 
+      app.get('/getManageData/:email', async(req, res) => {
+        const email = req.params.email 
+        const filter = {email}
+        const result = volunteerManagementCollection.find(filter).toArray()
+        res.send(result)
+      })
+
 
 
     // Connect the client to the server	(optional starting in v4.7)
