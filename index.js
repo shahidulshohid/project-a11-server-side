@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 8000;
 
 const app = express();
@@ -34,11 +34,38 @@ async function run() {
         res.send(result)
     })
 
-    //get data volunteer needs now section
-    app.get('volunteer-needs', async(req, res) => {
-        const result = await volunteerManagementCollection.find().sort({deadline: 1})
+    //get data volunteer needs now section fro just 6 card
+    app.get('/volunteer-needs', async(req, res) => {
+        const result = await volunteerManagementCollection.find().limit(6).sort({deadline: 1}).toArray()
         res.send(result)
     })
+    //get all data for volunteer needs post page
+    app.get('/all-volunteer-needs', async(req, res) => {
+      const search = req.query.search 
+      let query = {
+        title: {
+          $regex: search, $options: 'i'
+        }
+      }
+      const result = await volunteerManagementCollection.find(query).toArray()
+        res.send(result)
+    })
+
+    //get data for a details page
+    app.get('/volunteerDetails/:id', async(req, res) => {
+        const id = req.params.id 
+        const query = {_id: new ObjectId(id)}
+        const result = await volunteerManagementCollection.findOne(query)
+        res.send(result)
+      })
+
+      // get data for be a volunteer page 
+      // app.get('/be-volunteer/:id', async(req, res) => {
+      //   const id = req.params.id 
+      //   const query = {_id: new ObjectId(id)} 
+      //   const result = await volunteerManagementCollection.findOne(query)
+      //   res.send(result)
+      // })
 
 
 
