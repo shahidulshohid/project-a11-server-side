@@ -26,6 +26,7 @@ async function run() {
   try {
     
     const volunteerManagementCollection = client.db("volunteerManagement").collection('volunteerCollection');
+    const beRequestCollection = client.db("volunteerManagement").collection('beCollection');
     
     // for add volunteer post 
     app.post('/add-volunteer-post', async(req, res) => {
@@ -60,12 +61,26 @@ async function run() {
       })
 
       // get data for be a volunteer page 
-      // app.get('/be-volunteer/:id', async(req, res) => {
-      //   const id = req.params.id 
-      //   const query = {_id: new ObjectId(id)} 
-      //   const result = await volunteerManagementCollection.findOne(query)
-      //   res.send(result)
-      // })
+      app.get('/be-volunteer/:id', async(req, res) => {
+        const id = req.params.id 
+        const query = {_id: new ObjectId(id)} 
+        const result = await volunteerManagementCollection.findOne(query)
+        res.send(result)
+      })
+
+      //get a request be volunteer
+      app.post('/request-be-volunteer', async(req, res) => {
+        const requestData = req.body 
+        const result = await beRequestCollection.insertOne(requestData)
+        
+        // decrease no. of volunteer needs 
+        const filter = {_id: new ObjectId(requestData.volunteerId)}
+        const updated = {
+          $inc: {number: -1}
+        }
+        const updateCount = await volunteerManagementCollection.updateOne(filter, updated)
+        res.send(result)
+      })
 
 
 
