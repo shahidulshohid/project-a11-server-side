@@ -86,7 +86,8 @@ async function run() {
       app.get('/getManageData/:email', async(req, res) => {
         const email = req.params.email 
         const filter = {email}
-        const result = volunteerManagementCollection.find(filter).toArray()
+        const result = await volunteerManagementCollection.find(filter).toArray()
+        console.log(result)
         res.send(result)
       })
 
