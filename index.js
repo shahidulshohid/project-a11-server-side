@@ -76,7 +76,7 @@ async function run() {
         // decrease no. of volunteer needs 
         const filter = {_id: new ObjectId(requestData.volunteerId)}
         const updated = {
-          $inc: {number: -1}
+          $inc: {number: parseInt(-1)}
         }
         const updateCount = await volunteerManagementCollection.updateOne(filter, updated)
         res.send(result)
@@ -109,6 +109,14 @@ async function run() {
         }
         const options = {upsert:true}
         const result = await volunteerManagementCollection.updateOne(query, update, options)
+        res.send(result)
+      })
+
+      //get data for My Volunteer Request Post
+      app.get('/beVolunteer/:email', async(req, res) => {
+        const email = req.params.email 
+        const query = {email} 
+        const result = await beRequestCollection.find().toArray()
         res.send(result)
       })
 
