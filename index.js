@@ -10,7 +10,11 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin:['http://localhost:5173'],
+  origin:['http://localhost:5173',
+   'http://localhost:5174',
+    'https://b10-assignment-11.web.app',
+    'https://b10-assignment-11.firebaseapp.com'
+  ],
   credentials:true
 }));
 app.use(express.json());
@@ -27,6 +31,7 @@ const verifyToken = (req, res, next) => {
     if(error){
       return res.status(401).send({message: 'unauthorized access'})
     }
+    req.user = decoded
   })
   next()
 }
@@ -53,16 +58,18 @@ async function run() {
       const user = req.body 
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn:'5h'})
       res.cookie('token', token, {
-        httpOnly:true,
-        secure:false
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       })
       .send({success:true})
     })
 
     app.post('/logout', (req, res) => {
       res.clearCookie('token', {
-        httpOnly:true,
-        secure:false
+        maxAge: 0,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       })
       .send({success:true})
     })
