@@ -76,7 +76,7 @@ async function run() {
 
 
     // for add volunteer post 
-    app.post('/add-volunteer-post', async(req, res) => {
+    app.post('/add-volunteer-post', verifyToken, async(req, res) => {
         const data = req.body 
         const result = await volunteerManagementCollection.insertOne(data)
         res.send(result)
