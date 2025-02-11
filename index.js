@@ -84,7 +84,7 @@ async function run() {
 
     //get data volunteer needs now section fro just 6 card
     app.get('/volunteer-needs', async(req, res) => {
-        const result = await volunteerManagementCollection.find().limit(6).sort({deadline: 1}).toArray()
+        const result = await volunteerManagementCollection.find().limit(8).sort({deadline: 1}).toArray()
         res.send(result)
     })
     //get all data for volunteer needs post page
@@ -100,7 +100,7 @@ async function run() {
     })
 
     //get data for a details page
-    app.get('/volunteerDetails/:id', async(req, res) => {
+    app.get('/volunteerDetails/:id', verifyToken, async(req, res) => {
         const id = req.params.id 
         const query = {_id: new ObjectId(id)}
         const result = await volunteerManagementCollection.findOne(query)
