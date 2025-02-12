@@ -95,7 +95,7 @@ async function run() {
           $regex: search, $options: 'i'
         }
       }
-      const result = await volunteerManagementCollection.find(query).toArray()
+      const result = await volunteerManagementCollection.find(query).sort({deadline: 1}).toArray()
         res.send(result)
     })
 
